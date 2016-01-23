@@ -6,6 +6,7 @@ using namespace std;
 
 Map::Map() {
     head = nullptr;
+    tail = nullptr;
     nItems = 0;
 }
 
@@ -19,6 +20,7 @@ Map::~Map() {
         delete ptr;
         
         head = nullptr;
+        tail = nullptr;
         nItems = 0;
     }
 }
@@ -27,6 +29,7 @@ Map::Map(const Map& anotherMap) {
     if (anotherMap.nItems == 0) {
         nItems = 0;
         head = nullptr;
+        tail = nullptr;
     } else {
         KeyType key;
         ValueType value;
@@ -50,6 +53,7 @@ Map& Map::operator=(const Map& anotherMap) {
         delete ptr;
         
         head = nullptr;
+        tail = nullptr;
         nItems = 0;
     }
     
@@ -76,6 +80,7 @@ int Map::size() const {
 bool Map::insert(const KeyType& key, const ValueType& value) {
     if (nItems == 0) {
         head = new Node;
+        tail = head;
         
         head->key = key;
         head->value = value;
@@ -96,6 +101,7 @@ bool Map::insert(const KeyType& key, const ValueType& value) {
         ptr->next->value = value;
         ptr->next->next = nullptr;
         ptr->next->previous = ptr;
+        tail = ptr->next;
     }
     
     nItems++;
@@ -161,6 +167,7 @@ bool Map::erase(const KeyType& key) {
                     return true;
                 } else {
                     ptr->previous->next = nullptr;
+                    tail = ptr->previous;
                     delete ptr;
                     nItems--;
                     return true;
@@ -237,10 +244,15 @@ bool Map::get(int i, KeyType& key, ValueType& value) const {
 }
 
 void Map::swap(Map& other) {
-    Node* temp;
-    temp = other.head;
+    Node* tempHead;
+    tempHead = other.head;
     other.head = head;
-    head = temp;
+    head = tempHead;
+    
+    Node* tempTail;
+    tempTail = other.tail;
+    other.tail = tail;
+    tail = tempTail;
     
     int tempNItems;
     tempNItems = other.nItems;

@@ -35,6 +35,7 @@ private:
         Node* previous;
     };
     Node* head;
+    Node* tail;
     int nItems;
 };
 
