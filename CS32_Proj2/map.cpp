@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include "map.h"
 
 using namespace std;
@@ -26,6 +25,10 @@ Map::~Map() {
 }
 
 Map::Map(const Map& anotherMap) {
+    head = nullptr;
+    tail = nullptr;
+    nItems = 0;
+    
     if (anotherMap.nItems == 0) {
         nItems = 0;
         head = nullptr;
@@ -262,7 +265,7 @@ void Map::swap(Map& other) {
 
 
 bool combine(const Map& m1, const Map& m2, Map& result) {
-    result = *new Map;
+    Map combinedMap = *new Map;
     
     bool hasConflict = false;
     for (int i = 0; i < m1.size(); i++) {
@@ -279,7 +282,7 @@ bool combine(const Map& m1, const Map& m2, Map& result) {
             }
         }
         
-        result.insertOrUpdate(key, value);
+        combinedMap.insertOrUpdate(key, value);
     }
     
     for (int i = 0; i < m2.size(); i++) {
@@ -288,8 +291,10 @@ bool combine(const Map& m1, const Map& m2, Map& result) {
         m2.get(i, key, value);
         
         if (!m1.contains(key))
-            result.insertOrUpdate(key, value);
+            combinedMap.insertOrUpdate(key, value);
     }
+    
+    result = combinedMap;
     
     if (hasConflict)
         return false;
@@ -299,7 +304,7 @@ bool combine(const Map& m1, const Map& m2, Map& result) {
 
 
 void subtract(const Map& m1, const Map& m2, Map& result) {
-    result = *new Map;
+    Map subtractedMap = *new Map;
     
     for (int i = 0; i < m1.size(); i++) {
         KeyType key;
@@ -307,6 +312,8 @@ void subtract(const Map& m1, const Map& m2, Map& result) {
         m1.get(i, key, value);
         
         if (!m2.contains(key))
-            result.insertOrUpdate(key, value);
+            subtractedMap.insertOrUpdate(key, value);
     }
+    
+    result = subtractedMap;
 }
